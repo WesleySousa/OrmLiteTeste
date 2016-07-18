@@ -10,12 +10,5 @@
 .idea/vcs.xml
 .idea/workspace.xml
 OrmLiteTeste.iml
-app/
-build.gradle
 build/
-gradle.properties
 gradle/
-gradlew
-gradlew.bat
-local.properties
-settings.gradle
