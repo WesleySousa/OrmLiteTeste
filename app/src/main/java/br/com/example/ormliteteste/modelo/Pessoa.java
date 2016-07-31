@@ -21,7 +21,7 @@ public class Pessoa implements Serializable {
     private Long id;
     @DatabaseField(canBeNull = false)
     private String nome;
-    @DatabaseField(canBeNull = false, columnName = "data_nascimento", dataType = DataType.DATE)
+    @DatabaseField(canBeNull = true, columnName = "data_nascimento", dataType = DataType.DATE)
     private Date dataNascimento;
     @DatabaseField(canBeNull = true)
     private String endereco;

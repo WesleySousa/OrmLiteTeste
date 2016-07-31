@@ -1,10 +1,17 @@
 package br.com.example.ormliteteste;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.j256.ormlite.dao.Dao;
@@ -16,69 +23,69 @@ import java.nio.channels.FileChannel;
 import java.sql.SQLException;
 import java.util.List;
 
+import br.com.example.ormliteteste.adapter.PessoaAdapter;
 import br.com.example.ormliteteste.dao.ContaDao;
 import br.com.example.ormliteteste.dao.DataBaseHelper;
 import br.com.example.ormliteteste.dao.PessoaDao;
 import br.com.example.ormliteteste.modelo.Conta;
 import br.com.example.ormliteteste.modelo.Pessoa;
+import br.com.example.ormliteteste.util.Util;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String SCRIPT = "Script";
+    private static final int COD_PESSOA = 71;
+    private Context mContext;
     private DataBaseHelper dataBaseHelper;
+    private Dao<Pessoa, Long> pDao;
+    private ListView listPessoas;
+    private List<Pessoa> pessoas;
+    private PessoaAdapter pessoaAdapter;
+    private TextView txtListaVazia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dataBaseHelper = new DataBaseHelper(this);
-
+        mContext = this;
+        dataBaseHelper = new DataBaseHelper(mContext);
+        txtListaVazia = (TextView) findViewById(R.id.txt_lista_vazia);
         try {
-            PessoaDao pDao = new PessoaDao(dataBaseHelper.getConnectionSource());
-            /*Pessoa p = new Pessoa();
-            p.setNome("Wesley Sousa");
-            p.setEndereco("Travessa timbiras II");
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(1995, Calendar.APRIL, 27);
-            p.setDataNascimento(calendar.getTime());
-            int i = pDao.create(p);
-            Log.d(SCRIPT, "Pessoa cadastrada");
-            if (i != 1)
-                return;*/
-            //pDao.delete(pDao.queryForId(1L));
-            //Log.d(SCRIPT, pDao.queryForId(1L).toString());
-            List<Pessoa> pessoas = pDao.queryForAll();
-            Log.d(SCRIPT, "");
-            Log.d(SCRIPT, "Pessoas cadastradas");
-            for(Pessoa p : pessoas) {
-                Log.d(SCRIPT, p.toString());
-                Log.d(SCRIPT, "");
-                Log.d(SCRIPT, "Contas cadastradas");
-                for(Conta c : p.getContas()) {
-                    Log.d(SCRIPT, c.toString());
-                }
-                Log.d(SCRIPT, "");
-            }
-            Log.d(SCRIPT, "");
+            pDao = dataBaseHelper.getPessoaDao();
+            pessoas = pDao.queryForAll();
 
-            ContaDao cDao = new ContaDao(dataBaseHelper.getConnectionSource());
-
-            List<Conta> contas = cDao.queryForAll();
-            Log.d(SCRIPT, "");
-            Log.d(SCRIPT, "Contas cadastradas");
-            for(Conta c : contas) {
-                Log.d(SCRIPT, c.toString());
-                Log.d(SCRIPT, c.getPessoa().toString());
-            }
-            Log.d(SCRIPT, "");
-
-            Dao<Pessoa, Long> pessoaDao = dataBaseHelper.getPessoaDao();
-            List<Pessoa> pessoas1 = pessoaDao.queryForAll();
-
+            listPessoas = (ListView) findViewById(R.id.list_pessoas);
+            pessoaAdapter = new PessoaAdapter(mContext, R.layout.pessoa_row, pessoas);
+            listPessoas.setAdapter(pessoaAdapter);
 
         } catch (SQLException e) {
             e.printStackTrace();
+            Util.message(mContext, "Erro ao abrir banco de dados");
+            finish();
+        }
+
+        verificaListaVazia();
+
+        listPessoas.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Pessoa pessoa = pessoas.get(i);
+                Intent intent = new Intent(mContext, PessoaCadastro.class);
+                intent.putExtra("pessoa", pessoa);
+                intent.putExtra("atualizar", true);
+                startActivityForResult(intent, COD_PESSOA);
+            }
+        });
+
+
+    }
+
+    private void verificaListaVazia() {
+        if (pessoas.isEmpty()) {
+            txtListaVazia.setVisibility(View.VISIBLE);
+        } else {
+            txtListaVazia.setVisibility(View.GONE);
         }
     }
 
@@ -89,35 +96,36 @@ public class MainActivity extends AppCompatActivity {
             dataBaseHelper.close();
     }
 
-    public void backupDB(View view) {
-        Log.d(SCRIPT, "Fazendo backup.");
-        exportDB();
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main_activity, menu);
+        return true;
     }
 
-    private void exportDB() {
-        try {
-            File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
-            if (sd.canWrite()) {
-                String currentDBPath = "//data//" + getPackageName()
-                        + "//databases//" + DataBaseHelper.DATABASE_NAME;
-                String backupDBPath = DataBaseHelper.DATABASE_NAME;
-                File currentDB = new File(data, currentDBPath);
-                File backupDB = new File(sd, backupDBPath);
-
-                FileChannel src = new FileInputStream(currentDB).getChannel();
-                FileChannel dst = new FileOutputStream(backupDB).getChannel();
-                dst.transferFrom(src, 0, src.size());
-                src.close();
-                dst.close();
-                Toast.makeText(getApplicationContext(), "Backup com sucesso!",
-                        Toast.LENGTH_SHORT).show();
-            }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.mnu_novo :
+                Intent intent = new Intent(mContext, PessoaCadastro.class);
+                startActivityForResult(intent, COD_PESSOA);
+                break;
         }
-        catch (Exception e) {
-            Toast.makeText(getApplicationContext(), "Backup Falhou!", Toast.LENGTH_SHORT)
-                    .show();
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == COD_PESSOA && resultCode == RESULT_OK) {
+            try {
+                pessoas.clear();
+                pessoas.addAll(pDao.queryForAll());
+                pessoaAdapter.notifyDataSetChanged();
+
+                verificaListaVazia();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

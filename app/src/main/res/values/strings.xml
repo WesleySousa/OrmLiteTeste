@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">OrmLiteTeste</string>
+    <string name="novo">Novo</string>
+    <string name="nome">Nome:</string>
+    <string name="data_de_nascimento">Data de nascimento:</string>
+    <string name="endere_o">Endereço:</string>
+    <string name="salvar">Salvar</string>
+    <string name="title_pessoa">Pessoa</string>
+    <string name="nenhuma_pessoa_cadastrada">Nenhuma pessoa cadastrada</string>
 </resources>

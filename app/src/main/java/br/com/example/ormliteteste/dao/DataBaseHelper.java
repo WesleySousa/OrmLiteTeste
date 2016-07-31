@@ -19,8 +19,8 @@ import br.com.example.ormliteteste.modelo.Pessoa;
  * Created by wesley on 7/22/16.
  */
 public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
-    public static final String DATABASE_NAME = "testeorm.db";
-    private static final int DATABASE_VERSION = 3;
+    public static final String DATABASE_NAME = "java_para_zumbir.db";
+    private static final int DATABASE_VERSION = 2;
 
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
