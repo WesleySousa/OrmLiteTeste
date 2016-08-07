@@ -7,4 +7,13 @@
     <string name="salvar">Salvar</string>
     <string name="title_pessoa">Pessoa</string>
     <string name="nenhuma_pessoa_cadastrada">Nenhuma pessoa cadastrada</string>
+    <string name="backup">Backup</string>
+    <string name="numero">Numero:</string>
+    <string name="ag_ncia">Agência</string>
+    <string name="saldo">Saldo:</string>
+    <string name="tipo">Tipo:</string>
+    <string name="poupan_a">Poupança</string>
+    <string name="corrente">Corrente</string>
+    <string name="conta">Conta</string>
+    <string name="pessoa">Pessoa:</string>
 </resources>

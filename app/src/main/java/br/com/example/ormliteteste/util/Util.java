@@ -51,12 +51,13 @@ public class Util {
         return sdf.format(data);
     }
 
-    public static void exportDB(String namePackage) {
+    public static boolean exportDB(String namePackage) {
         try {
-            File sd = Environment.getExternalStorageDirectory();
+            File sd = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
             File data = Environment.getDataDirectory();
 
             if (sd.canWrite()) {
+
                 String currentDBPath = "//data//" + namePackage
                         + "//databases//" + DataBaseHelper.DATABASE_NAME;
                 String backupDBPath = DataBaseHelper.DATABASE_NAME;
@@ -68,10 +69,13 @@ public class Util {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-
+                return true;
+            } else {
+                return false;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
     }
 }

@@ -7,4 +7,13 @@
         android:title="@string/novo"
         android:icon="@drawable/ic_person_add_white_24dp"/>
 
+    <item android:id="@+id/mnu_nova_conta"
+        app:showAsAction="ifRoom"
+        android:title="@string/conta"
+        android:icon="@drawable/ic_account_balance_wallet_white_24dp"/>
+
+    <item android:id="@+id/mnu_backup"
+        app:showAsAction="ifRoom"
+        android:title="@string/backup"
+        android:icon="@drawable/ic_backup_white_24dp"/>
 </menu>

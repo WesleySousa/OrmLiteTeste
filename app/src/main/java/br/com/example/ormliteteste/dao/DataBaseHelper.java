@@ -20,7 +20,7 @@ import br.com.example.ormliteteste.modelo.Pessoa;
  */
 public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     public static final String DATABASE_NAME = "java_para_zumbir.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 10;
 
     public DataBaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -29,8 +29,8 @@ public class DataBaseHelper extends OrmLiteSqliteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
         try {
-            TableUtils.createTable(connectionSource, Conta.class);
             TableUtils.createTable(connectionSource, Pessoa.class);
+            TableUtils.createTable(connectionSource, Conta.class);
         } catch (SQLException e) {
             e.printStackTrace();
         }

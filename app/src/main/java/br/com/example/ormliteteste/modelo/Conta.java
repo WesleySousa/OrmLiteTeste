@@ -24,7 +24,8 @@ public class Conta implements Serializable {
     @DatabaseField(columnName = "conta_tipo", dataType = DataType.ENUM_STRING)
     private ContaTipo contaTipo;
 
-    @DatabaseField(foreign = true, columnName = "pessoa_id")
+    @DatabaseField(foreign = true, columnName = "pessoa_id", foreignColumnName = "id",
+    columnDefinition = "references pessoas(id) on delete cascade")
     private Pessoa pessoa;
 
     public Conta() {
@@ -107,7 +108,6 @@ public class Conta implements Serializable {
                 ", agencia='" + agencia + '\'' +
                 ", saldo=" + saldo +
                 ", contaTipo=" + contaTipo +
-                ", pessoa=" + pessoa +
-                '}';
+                ", pessoa=" +pessoa+"}";
     }
 }
